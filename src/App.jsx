@@ -516,6 +516,9 @@ function ProcessSection() {
   const diagramRef = useRef(null);
   const [diagramRendered, setDiagramRendered] = useState(false);
 
+  const ivrDiagramRef = useRef(null);
+  const [ivrRendered, setIvrRendered] = useState(false);
+
   useEffect(() => {
     if (diagramRef.current && !diagramRendered) {
       const diagram = `
@@ -560,6 +563,84 @@ flowchart LR
     }
   }, [diagramRendered]);
 
+  useEffect(() => {
+    if (ivrDiagramRef.current && !ivrRendered) {
+      const ivrDiagram = `
+%%{init: {'flowchart': {'curve': 'basis', 'nodeSpacing': 45, 'rankSpacing': 70}}}%%
+flowchart LR
+    Start(["Inbound Call<br/>Health Plan Support Line"])
+
+    Start --> PhoneDownCheck{"Phone system<br/>outage?"}:::decision
+    PhoneDownCheck -->|Yes| PhoneDownMsg["PROMPT<br/>'We're experiencing technical<br/>difficulties and can't take your<br/>call. Please use the self-service<br/>portal to manage requests.'"]:::prompt
+    PhoneDownMsg --> PhoneDownEnd(["Call Cannot Be<br/>Completed"]):::outcomeNeutral
+
+    PhoneDownCheck -->|No| HoursCheck{"Within<br/>business hours?"}:::decision
+
+    HoursCheck -->|Holiday| HolidayMsg["PROMPT<br/>'Our Service Center is closed for<br/>the holiday. You can check status<br/>or submit a request on the<br/>self-service portal.'"]:::prompt
+    HolidayMsg --> HolidayEnd(["Call Ended<br/>(Holiday Closure)"]):::outcomeNeutral
+
+    HoursCheck -->|Off-hours| OffHoursMsg["PROMPT<br/>'We're currently closed. Check<br/>status or submit a request on the<br/>self-service portal, or leave a<br/>message after the tone.'"]:::prompt
+    OffHoursMsg --> OffHoursVM["Voicemail<br/>captured"]:::nlu
+    OffHoursVM --> OffHoursEnd(["Off-Hours Closure<br/>Voicemail Captured"]):::outcomeNeutral
+
+    HoursCheck -->|Within hours| Greeting["PROMPT<br/>'Thank you for calling. For<br/>quality purposes, this call may<br/>be recorded.'"]:::prompt
+
+    Greeting --> PortalDownCheck{"Self-service portal<br/>outage?"}:::decision
+    PortalDownCheck -->|Yes| PortalDownMsg["PROMPT<br/>'The self-service portal is<br/>temporarily unavailable. We're<br/>working to resolve this.'"]:::prompt
+    PortalDownMsg --> MainMenu
+    PortalDownCheck -->|No| MainMenu
+
+    MainMenu["PROMPT<br/>'For technical support, press 1.<br/>For provider services, press 2.<br/>To return a clinical call, press 3.<br/>For questions on a decision letter,<br/>press 4.'"]:::prompt
+
+    MainMenu -->|1| TSIntro
+    subgraph D1["Digit 1 — Technical Support"]
+        TSIntro["PROMPT<br/>'For account or login help,<br/>authentication assistance, or<br/>general support, stay on the<br/>line.'"]:::prompt
+        TSIntro --> TS_ConnectAgent[["→ Connect to Agent<br/>Queue: Technical Support"]]:::routing
+    end
+
+    MainMenu -->|2| ProvIntro
+    subgraph D2["Digit 2 — Provider Services"]
+        ProvIntro["PROMPT<br/>'Visit our resources page for FAQs<br/>and self-service tools. If you<br/>still need help, stay on the<br/>line.'"]:::prompt
+        ProvIntro --> Prov_ConnectAgent[["→ Connect to Agent<br/>Queue: Provider Registration"]]:::routing
+    end
+
+    MainMenu -->|3| D3Survey
+    subgraph D3["Digit 3 — Clinical Callback"]
+        D3Survey["PROMPT<br/>'At the end of your call, we'll<br/>invite you to a brief survey.<br/>Press 1 to participate, or 2 to<br/>decline.'"]:::prompt
+        D3Survey --> D3Capture["Survey opt-in<br/>captured"]:::nlu
+        D3Capture --> D3_ConnectAgent[["→ Connect to Agent<br/>Queue: Peer-to-Peer Review"]]:::routing
+    end
+
+    MainMenu -->|4| D4Survey
+    subgraph D4["Digit 4 — Decision Letter"]
+        D4Survey["PROMPT<br/>'At the end of your call, we'll<br/>invite you to a brief survey.<br/>Press 1 to participate, or 2 to<br/>decline.'"]:::prompt
+        D4Survey --> D4Capture["Survey opt-in<br/>captured"]:::nlu
+        D4Capture --> D4_ConnectAgent[["→ Connect to Agent<br/>Queue: Peer-to-Peer Review"]]:::routing
+    end
+
+    D1 ~~~ D2
+    D2 ~~~ D3
+    D3 ~~~ D4
+
+    classDef prompt fill:#E8F4FA,stroke:#039EC3,stroke-width:1px,text-align:left
+    classDef nlu fill:#E4F9F3,stroke:#11B08D,stroke-width:1.5px,stroke-dasharray: 4 2,text-align:left
+    classDef decision fill:#FFF3D6,stroke:#DD8A0E,stroke-width:1px
+    classDef routing fill:#F1EAFB,stroke:#6948A6,stroke-width:1px
+    classDef outcomeNeutral fill:#9AA5B1,stroke:#6b7480,color:#fff
+
+    style D1 fill:#F2F2F2,stroke:#B0B0B0,stroke-width:1px
+    style D2 fill:#F2F2F2,stroke:#B0B0B0,stroke-width:1px
+    style D3 fill:#F2F2F2,stroke:#B0B0B0,stroke-width:1px
+    style D4 fill:#F2F2F2,stroke:#B0B0B0,stroke-width:1px
+      `;
+
+      mermaid.render('mermaid-ivr-diagram', ivrDiagram).then(({ svg }) => {
+        ivrDiagramRef.current.innerHTML = svg;
+        setIvrRendered(true);
+      });
+    }
+  }, [ivrRendered]);
+
   return (
     <section id="process" className="py-24 bg-white relative">
       <div className="max-w-6xl mx-auto px-6">
@@ -585,6 +666,31 @@ flowchart LR
         <p className="text-slate-400 text-sm mt-4 text-center">
           Generic, vendor-neutral framework applicable to any UM or payer implementation
         </p>
+
+        {/* IVR Example */}
+        <div className="mt-20">
+          <div className="mb-12">
+            <span className="text-xs tracking-[0.2em] uppercase text-navy-600 font-medium">IVR Design Example</span>
+            <h2 className="font-display text-3xl lg:text-4xl text-navy-900 mt-2">
+              Call Routing Flow
+            </h2>
+            <p className="text-slate-500 mt-4 max-w-2xl">
+              A representative example of how I document IVR call flows — mapping outage
+              handling, business-hour logic, and menu routing down to the exact prompt
+              language and agent queue before a single line of config is touched.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 overflow-x-auto">
+            <div ref={ivrDiagramRef} className="mermaid min-h-[300px] flex items-center justify-center">
+              <div className="text-slate-400">Loading diagram...</div>
+            </div>
+          </div>
+
+          <p className="text-slate-400 text-sm mt-4 text-center">
+            Illustrative example — anonymized and generalized from real IVR design work; no client, vendor, or account-specific details shown
+          </p>
+        </div>
       </div>
     </section>
   );
