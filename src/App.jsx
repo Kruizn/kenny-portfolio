@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Linkedin, Mail, ChevronDown, ExternalLink, FileText, Workflow, Briefcase, ArrowRight } from 'lucide-react';
+import { Linkedin, Mail, ChevronDown, Workflow, Briefcase, ArrowRight } from 'lucide-react';
 import mermaid from 'mermaid';
 
 // Initialize mermaid with light theme
@@ -206,6 +206,29 @@ function About() {
 
 // Writing Section
 function Writing() {
+  const [expanded, setExpanded] = useState(false);
+
+  const frameworkSteps = [
+    'Can this be absorbed into an existing step, or does it genuinely require a new one?',
+    'If it requires a new step — is that step a candidate for automation or platform logic?',
+    'If manual handling is unavoidable short-term, what is the build timeline to eliminate it?',
+    'What is the annualized labor cost of the manual workaround? Does that justify expedited dev prioritization?',
+  ];
+
+  const undisclosedSteps = [
+    'Capture the gap clearly and document the operational impact in concrete terms (time, volume, error risk)',
+    'Advocate for a technology-based resolution on a defined timeline',
+    'Implement the minimum viable manual process in the interim — not the most comfortable one',
+    'Sunset the manual workaround when the build is complete',
+  ];
+
+  const habits = [
+    { title: 'Put a number on every workaround.', body: 'Before accepting a manual fix as permanent, estimate the annual hours. Make the cost visible.' },
+    { title: 'Separate the interim fix from the long-term solution.', body: "They're not the same conversation. Don't conflate them." },
+    { title: 'Challenge every new screen and every new field.', body: 'Not to be difficult — but because every UI touchpoint is a cognitive load and an error opportunity.' },
+    { title: "Use the platform's capabilities before building around them.", body: 'If we have AI that can route, flag, and classify — we should be using it to absorb variation, not documenting variation in a spreadsheet.' },
+  ];
+
   return (
     <section id="writing" className="py-24 bg-slate-50 relative">
       <div className="max-w-4xl mx-auto px-6 relative z-10">
@@ -218,7 +241,7 @@ function Writing() {
             Practitioner-level writing on healthcare operations and process improvement.
           </p>
         </div>
-        
+
         {/* Featured Article */}
         <article className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm card-hover">
           <div className="p-8">
@@ -228,55 +251,259 @@ function Writing() {
               </span>
               <span className="text-xs text-slate-400">March 2026</span>
             </div>
-            
+
             <h3 className="font-display text-2xl text-navy-900 mb-4">
               The Hidden Cost of Manual Work
             </h3>
-            
+
             <p className="text-slate-600 mb-4 italic">
               Why small inefficiencies are quietly draining your team — and what to do instead
             </p>
-            
+
             <div className="text-slate-500 space-y-4 mb-6">
               <p>
-                In Utilization Management, we sit at one of the most operationally 
-                intense intersections in healthcare. Every gap has to be closed. 
-                Every new ask has to be met. And it has to be met <em>now</em>.
+                In Utilization Management, we sit at one of the most operationally
+                intense intersections in healthcare. We are managing prior authorization
+                workflows at scale, racing against clinical timelines, and held to
+                compliance standards that don't move just because a client forgot to
+                disclose a requirement during implementation. Every gap has to be
+                closed. Every new ask has to be met. And it has to be met <em>now</em>.
               </p>
               <p>
-                When a new client requirement surfaces, the instinct is understandable: 
-                add a person, add a step, build a quick spreadsheet on the side. But here 
-                is the reality I keep coming back to: <strong className="text-slate-700">it is never just one step.</strong>
+                When a new client requirement surfaces — or an existing one shifts —
+                the instinct is understandable: add a person, add a step, build a quick
+                spreadsheet on the side, write it all down in a Word doc. Solved. Done.
+                Ship it.
+              </p>
+              <p>
+                But here is the reality I keep coming back to:{' '}
+                <strong className="text-slate-700">it is never just one step.</strong>{' '}
+                It is never just one extra screen, one additional documenting field,
+                one small workaround. It accumulates. And the accumulation is exactly
+                where organizations lose — not dramatically, but quietly, consistently,
+                and at a scale that only becomes visible when you step back and
+                actually measure it.
               </p>
             </div>
-            
+
             {/* Key insight callout */}
             <div className="bg-slate-50 border-l-4 border-navy-500 p-4 rounded-r mb-6">
               <p className="text-slate-700 font-medium font-mono text-sm">
-                "One extra step" is never just one extra step. It's one step multiplied 
+                "One extra step" is never just one extra step. It's one step multiplied
                 by every reviewer, every case, every shift, every week — forever.
               </p>
             </div>
-            
-            {/* Quick math box */}
-            <div className="bg-navy-50 rounded-lg p-5 mb-6">
-              <p className="text-navy-800 font-medium mb-3 text-sm uppercase tracking-wide">Quick Math</p>
-              <p className="text-slate-600 text-sm">
-                If your team manages 5 client-specific manual workarounds averaging 30 seconds each, 
-                on 80 cases per day, that's over <span className="text-navy-700 font-semibold">830 hours of invisible labor annually</span>. 
-                That's the equivalent of one full-time employee doing nothing but manual exceptions.
-              </p>
-            </div>
-            
-            <a 
-              href="https://docs.google.com/document/d/1pJRk6J2MV64trEFmQfvbVImkhTv4mWES/edit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-navy-600 hover:text-navy-800 transition-colors link-underline"
+
+            {expanded && (
+              <div className="text-slate-500 space-y-6">
+                <div className="space-y-4">
+                  <h4 className="font-display text-xl text-navy-800">The Anatomy of a "Small" Fix</h4>
+                  <p>
+                    Picture this. A client goes live and three weeks in, their team
+                    flags that a specific authorization type needs a secondary
+                    clinical note field captured — something that wasn't in the
+                    original SOW. No big deal. A quick column gets added to the
+                    tracking spreadsheet. The team gets a message with instructions.
+                    The process doc gets updated.
+                  </p>
+                  <p>
+                    This takes maybe two hours to set up. And then it runs —
+                    invisibly, in the background — forever.
+                  </p>
+                  <p>Let's put some rough numbers to it:</p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li>30 seconds per case to manually enter the extra field</li>
+                    <li>80 cases per day processed by that team</li>
+                    <li>250 working days per year</li>
+                  </ul>
+                  <p>
+                    That's 600,000 seconds — or roughly 167 hours — every single
+                    year spent on one undisclosed requirement. One. Now multiply
+                    that by the number of client-specific variations your team is
+                    carrying right now.
+                  </p>
+                </div>
+
+                {/* Quick math box */}
+                <div className="bg-navy-50 rounded-lg p-5">
+                  <p className="text-navy-800 font-medium mb-3 text-sm uppercase tracking-wide">Quick Math</p>
+                  <p className="text-slate-600 text-sm">
+                    If your team manages 5 client-specific manual workarounds
+                    averaging 30 seconds each, on 80 cases per day, that's over{' '}
+                    <span className="text-navy-700 font-semibold">830 hours of invisible labor annually</span>.
+                    That's the equivalent of one full-time employee doing nothing
+                    but manual exceptions — and it never shows up on a headcount
+                    report.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-display text-xl text-navy-800">Why We Reach for the "Add a Step" Solution</h4>
+                  <p>
+                    To be clear, I'm not criticizing the instinct. I've done it.
+                    When a client escalates and leadership wants the gap closed by
+                    end of week, the fastest path to resolution is usually a human
+                    workaround and a documented process update.
+                  </p>
+                  <p>But there's a pattern I want to name:</p>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li><strong className="text-slate-700">Speed bias.</strong> Manual fixes are faster to implement than system changes. The spreadsheet takes an afternoon; a platform enhancement takes a sprint cycle or a backlog prioritization conversation.</li>
+                    <li><strong className="text-slate-700">Risk aversion.</strong> Changing the tech feels scarier than adding a process step. What if the build breaks something else? What if the timeline slips?</li>
+                    <li><strong className="text-slate-700">Invisible cost.</strong> The manual work gets done. The case gets closed. The client is happy. Nobody sees the tax being paid — because it's paid in seconds, not dollars, and spread across dozens of people.</li>
+                    <li><strong className="text-slate-700">Documentation theater.</strong> We write up the workaround in a process doc, as if documenting something makes it optimized. A well-documented bad process is still a bad process.</li>
+                  </ul>
+                  <p>
+                    Like many companies that leverage AI to improve workflows — and
+                    yet our first response to a process gap is sometimes to solve
+                    it like it's 1998: add a person, add a column, add a step.
+                    There is a fundamental tension there that we need to keep
+                    calling out.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-display text-xl text-navy-800">Where the Real Savings Live</h4>
+                  <p>
+                    True operational savings in UM — the kind that compound, that
+                    reduce error rates, that scale without headcount — almost
+                    always live in one of two places:
+                  </p>
+                  <p>
+                    <strong className="text-slate-700">1. Process optimization.</strong>{' '}
+                    Before adding a step, the first question should always be: can
+                    we eliminate or redesign a step that already exists? Can the
+                    new client requirement be absorbed into the existing workflow
+                    rather than appended to it? Can the authorization review path
+                    be restructured so the exception becomes the rule and the rule
+                    requires less handling?
+                  </p>
+                  <p>
+                    <strong className="text-slate-700">2. Technology leverage.</strong>{' '}
+                    This is where our competitive advantage actually sits. If we
+                    are already using AI to surface clinical criteria, flag
+                    incomplete submissions, and route cases intelligently, then the
+                    same infrastructure can absorb a new data capture requirement,
+                    a new routing rule, a new client-specific logic branch. The
+                    cost of building it into the platform is a one-time
+                    investment. The cost of running it manually is infinite.
+                  </p>
+                </div>
+
+                {/* Key insight callout */}
+                <div className="bg-slate-50 border-l-4 border-navy-500 p-4 rounded-r">
+                  <p className="text-slate-700 font-medium font-mono text-sm">
+                    A well-documented bad process is still a bad process.
+                    Documentation is not optimization.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <p>
+                    The conversation I want us to normalize is: when a new
+                    requirement lands, we evaluate it against a simple framework
+                    before deciding how to solve it.
+                  </p>
+                  <div className="bg-navy-50 rounded-lg p-5">
+                    <p className="text-navy-800 font-medium mb-3 text-sm uppercase tracking-wide">
+                      The Gap-Close Decision Framework
+                    </p>
+                    <ol className="list-decimal pl-5 space-y-2 text-slate-600 text-sm">
+                      {frameworkSteps.map((step, i) => (
+                        <li key={i}>{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-display text-xl text-navy-800">A Note on Undisclosed Requirements</h4>
+                  <p>
+                    Some of our highest-friction operational moments come not from
+                    scope creep, but from requirements that were never disclosed
+                    in the first place — things the client assumed were standard,
+                    or things that surfaced only after go-live when real cases
+                    started flowing through.
+                  </p>
+                  <p>
+                    These gaps are unavoidable in a complex clinical workflow
+                    environment. What isn't unavoidable is how we respond to them.
+                    The undisclosed requirement becomes a permanent manual
+                    workaround only if we let it. Our job — specifically in a team
+                    that sits between operations and technology — is to be the
+                    translation layer:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    {undisclosedSteps.map((step, i) => (
+                      <li key={i}>{step}</li>
+                    ))}
+                  </ul>
+                  <p>
+                    That last point matters more than it sounds. Workarounds do
+                    not self-destruct. If you don't actively retire them, they
+                    become permanent. The spreadsheet from 2022 is still running
+                    somewhere right now. I guarantee it.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-display text-xl text-navy-800">What This Means for How We Work</h4>
+                  <p>
+                    None of this is an argument against hustle, or against doing
+                    what it takes to close a gap when the client needs it closed.
+                    It's an argument for being honest about the true cost of the
+                    solutions we choose — and for building a team culture where
+                    the default question is optimization, not addition.
+                  </p>
+                  <p>A few habits that have started to shift how I approach this:</p>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {habits.map((h, i) => (
+                      <li key={i}><strong className="text-slate-700">{h.title}</strong> {h.body}</li>
+                    ))}
+                  </ul>
+                  <p>
+                    The organizations that win in UM over the next five years are
+                    not going to be the ones with the most FTEs or the most
+                    comprehensive process documentation. They're going to be the
+                    ones who built the discipline to keep their operations clean —
+                    who treated every manual workaround as temporary, and who had
+                    the technical infrastructure to back that promise up.
+                  </p>
+                  <p className="text-slate-700 font-medium">
+                    We have that infrastructure. The question is whether we use it.
+                  </p>
+                </div>
+
+                <div className="border-t border-slate-200 pt-6">
+                  <p className="text-xs tracking-[0.2em] uppercase text-navy-600 font-medium mb-2">About the Author</p>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    Kenny is a Manager in Utilization Management Technology, where
+                    he focuses on optimizing the prior authorization process
+                    through AI-driven workflows and systematic process
+                    improvement. He writes about the intersection of operations,
+                    technology, and healthcare efficiency at The Operations Desk.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {!expanded && (
+              <div className="bg-navy-50 rounded-lg p-5 mb-6">
+                <p className="text-navy-800 font-medium mb-3 text-sm uppercase tracking-wide">Quick Math</p>
+                <p className="text-slate-600 text-sm">
+                  If your team manages 5 client-specific manual workarounds averaging 30 seconds each,
+                  on 80 cases per day, that's over <span className="text-navy-700 font-semibold">830 hours of invisible labor annually</span>.
+                  That's the equivalent of one full-time employee doing nothing but manual exceptions.
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="inline-flex items-center gap-2 text-navy-600 hover:text-navy-800 transition-colors link-underline mt-2"
             >
-              Read full article
-              <ExternalLink size={14} />
-            </a>
+              {expanded ? 'Show less' : 'Read full article'}
+              <ChevronDown size={14} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </article>
       </div>
@@ -437,7 +664,7 @@ function Footer() {
               <Linkedin size={20} />
             </a>
             <a 
-              href="mailto:kenny@example.com"
+              href="mailto:kruiz321@gmail.com"
               className="text-navy-300 hover:text-white transition-colors"
             >
               <Mail size={20} />
