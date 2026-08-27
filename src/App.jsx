@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Linkedin, Mail, ChevronDown, Workflow, Briefcase, ArrowRight } from 'lucide-react';
+import { Routes, Route, Link, NavLink, useLocation } from 'react-router-dom';
+import { Linkedin, Mail, ChevronDown, Workflow, Briefcase, ArrowRight, Menu, X, BookOpen, Headphones } from 'lucide-react';
 import mermaid from 'mermaid';
 
 // Initialize mermaid with light theme
@@ -26,9 +27,19 @@ mermaid.initialize({
   },
 });
 
+const NAV_LINKS = [
+  { to: '/about', label: 'About' },
+  { to: '/writing', label: 'Writing' },
+  { to: '/process', label: 'Process' },
+  { to: '/skills', label: 'Skills' },
+  { to: '/books', label: 'Books' },
+  { to: '/podcasts', label: 'Podcasts' },
+];
+
 // Navigation Component
 function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -36,22 +47,30 @@ function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navLinkClass = ({ isActive }) =>
+    `text-sm tracking-wide transition-colors ${
+      isActive ? 'text-navy-800 font-medium' : 'text-slate-600 hover:text-navy-700'
+    }`;
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white/95 backdrop-blur-sm shadow-md' : 'bg-transparent'
+      scrolled || mobileOpen ? 'bg-white/95 backdrop-blur-sm shadow-md' : 'bg-transparent'
     }`}>
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" className="font-display text-xl text-navy-800 hover:text-navy-600 transition-colors">
+        <Link to="/" className="font-display text-xl text-navy-800 hover:text-navy-600 transition-colors" onClick={() => setMobileOpen(false)}>
           KR
-        </a>
-        <div className="flex items-center gap-8">
-          <a href="#about" className="text-slate-600 hover:text-navy-700 transition-colors text-sm tracking-wide">About</a>
-          <a href="#writing" className="text-slate-600 hover:text-navy-700 transition-colors text-sm tracking-wide">Writing</a>
-          <a href="#process" className="text-slate-600 hover:text-navy-700 transition-colors text-sm tracking-wide">Process</a>
-          <a href="#skills" className="text-slate-600 hover:text-navy-700 transition-colors text-sm tracking-wide">Skills</a>
-          <a 
-            href="https://www.linkedin.com/in/kennyruiz100507/" 
-            target="_blank" 
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-7">
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.to} to={link.to} className={navLinkClass}>
+              {link.label}
+            </NavLink>
+          ))}
+          <a
+            href="https://www.linkedin.com/in/kennyruiz100507/"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-navy-700 hover:bg-navy-800 text-white px-4 py-2 rounded transition-all"
           >
@@ -59,7 +78,41 @@ function Navigation() {
             <span className="text-sm">Connect</span>
           </a>
         </div>
+
+        {/* Mobile menu button */}
+        <button
+          className="md:hidden text-navy-800"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      {/* Mobile nav panel */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 flex flex-col gap-4">
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={navLinkClass}
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+          <a
+            href="https://www.linkedin.com/in/kennyruiz100507/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-navy-700 hover:bg-navy-800 text-white px-4 py-2 rounded transition-all w-fit"
+          >
+            <Linkedin size={16} />
+            <span className="text-sm">Connect</span>
+          </a>
+        </div>
+      )}
     </nav>
   );
 }
@@ -106,13 +159,13 @@ function Hero() {
               <Linkedin size={18} />
               View LinkedIn
             </a>
-            <a 
-              href="#about"
+            <Link 
+              to="/about"
               className="flex items-center gap-2 text-slate-600 hover:text-navy-700 transition-colors"
             >
               Learn more
               <ArrowRight size={16} />
-            </a>
+            </Link>
           </div>
         </div>
         
@@ -523,6 +576,11 @@ function PastoralInstinctArticle() {
         </p>
 
         <div className="text-slate-500 space-y-4 mb-6">
+          <img
+            src="/kenny-church.jpg"
+            alt="Kenny outside the church campus he helped build"
+            className="w-full sm:w-64 sm:float-right sm:ml-6 mb-4 rounded-lg shadow-md object-cover"
+          />
           <p>
             I spent 13 years working with at-risk youth — teenagers in foster
             care, court-involved kids, families in crisis. After that, I
@@ -1028,6 +1086,135 @@ function Skills() {
   );
 }
 
+// Scroll to top on route change
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  return null;
+}
+
+// Books Section
+function Books() {
+  const books = [
+    {
+      title: '[Book title]',
+      author: '[Author name]',
+      blurb: '[TBD — why this book shaped how you think about operations, leadership, or process design]',
+    },
+    {
+      title: '[Book title]',
+      author: '[Author name]',
+      blurb: '[TBD]',
+    },
+    {
+      title: '[Book title]',
+      author: '[Author name]',
+      blurb: '[TBD]',
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-white relative min-h-screen">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="mb-12">
+          <span className="text-xs tracking-[0.2em] uppercase text-navy-600 font-medium">Reading List</span>
+          <h2 className="font-display text-3xl lg:text-4xl text-navy-900 mt-2">
+            Books
+          </h2>
+          <p className="text-slate-500 mt-4 max-w-2xl">
+            Titles that have shaped how I think about operations, systems, and leadership.
+            <span className="text-slate-400 italic"> [Placeholder — swap in your actual picks]</span>
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {books.map((book, i) => (
+            <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-6 card-hover">
+              <div className="flex items-start gap-3 mb-3">
+                <BookOpen className="text-navy-600 mt-1 flex-shrink-0" size={20} />
+                <div>
+                  <h3 className="font-display text-lg text-navy-800">{book.title}</h3>
+                  <p className="text-slate-500 text-sm">{book.author}</p>
+                </div>
+              </div>
+              <p className="text-slate-500 text-sm leading-relaxed">{book.blurb}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Podcasts Section
+function Podcasts() {
+  const podcasts = [
+    {
+      title: '[Podcast name]',
+      host: '[Host name]',
+      blurb: '[TBD — why you listen and what you take from it for this kind of work]',
+    },
+    {
+      title: '[Podcast name]',
+      host: '[Host name]',
+      blurb: '[TBD]',
+    },
+    {
+      title: '[Podcast name]',
+      host: '[Host name]',
+      blurb: '[TBD]',
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-slate-50 relative min-h-screen">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="mb-12">
+          <span className="text-xs tracking-[0.2em] uppercase text-navy-600 font-medium">Listening List</span>
+          <h2 className="font-display text-3xl lg:text-4xl text-navy-900 mt-2">
+            Podcasts
+          </h2>
+          <p className="text-slate-500 mt-4 max-w-2xl">
+            What's in rotation on the commute — operations, healthcare, and a few outliers.
+            <span className="text-slate-400 italic"> [Placeholder — swap in your actual picks]</span>
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {podcasts.map((pod, i) => (
+            <div key={i} className="bg-white border border-slate-200 rounded-lg p-6 card-hover">
+              <div className="flex items-start gap-3 mb-3">
+                <Headphones className="text-navy-600 mt-1 flex-shrink-0" size={20} />
+                <div>
+                  <h3 className="font-display text-lg text-navy-800">{pod.title}</h3>
+                  <p className="text-slate-500 text-sm">{pod.host}</p>
+                </div>
+              </div>
+              <p className="text-slate-500 text-sm leading-relaxed">{pod.blurb}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// 404 fallback
+function NotFound() {
+  return (
+    <section className="py-24 bg-white relative min-h-screen flex items-center justify-center">
+      <div className="text-center px-6">
+        <h2 className="font-display text-3xl text-navy-900 mb-4">Page not found</h2>
+        <Link to="/" className="text-navy-600 hover:text-navy-800 link-underline">
+          Back to home
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 // Footer
 function Footer() {
   return (
@@ -1072,11 +1259,17 @@ export default function App() {
   return (
     <div className="bg-white text-slate-800 min-h-screen">
       <Navigation />
-      <Hero />
-      <About />
-      <Writing />
-      <ProcessSection />
-      <Skills />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Hero />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/writing" element={<Writing />} />
+        <Route path="/process" element={<ProcessSection />} />
+        <Route path="/skills" element={<Skills />} />
+        <Route path="/books" element={<Books />} />
+        <Route path="/podcasts" element={<Podcasts />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Footer />
     </div>
   );
