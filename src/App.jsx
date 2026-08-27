@@ -578,7 +578,7 @@ function PastoralInstinctArticle() {
         <div className="text-slate-500 space-y-4 mb-6">
           <img
             src="/kenny-church.jpg"
-            alt="Kenny outside the church campus he helped build"
+            alt="Inside the church auditorium Kenny helped build out"
             className="w-full sm:w-64 sm:float-right sm:ml-6 mb-4 rounded-lg shadow-md object-cover"
           />
           <p>
@@ -1099,19 +1099,40 @@ function ScrollToTop() {
 function Books() {
   const books = [
     {
-      title: '[Book title]',
-      author: '[Author name]',
-      blurb: '[TBD — why this book shaped how you think about operations, leadership, or process design]',
+      title: '12 Rules for Life',
+      author: 'Jordan B. Peterson',
+      blurb: 'Twelve principles for taking responsibility and imposing order on chaos — a recurring lens for how I think about discipline and personal accountability at work.',
+      url: 'https://www.amazon.com/12-Rules-Life-Antidote-Chaos/dp/0345816021',
     },
     {
-      title: '[Book title]',
-      author: '[Author name]',
-      blurb: '[TBD]',
+      title: 'Atomic Habits',
+      author: 'James Clear',
+      blurb: 'The clearest framework I\u2019ve found for how small, consistent systems beat big one-time efforts — the same principle I apply to process design, not just personal habits.',
+      url: 'https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299',
     },
     {
-      title: '[Book title]',
-      author: '[Author name]',
-      blurb: '[TBD]',
+      title: '7 Rules of Power',
+      author: 'Jeffrey Pfeffer',
+      blurb: 'A research-backed, unsentimental look at how power actually works inside organizations — useful for navigating change management and stakeholder dynamics.',
+      url: 'https://www.amazon.com/Rules-Power-Surprising-but-True-Advice-Advance/dp/1637741227',
+    },
+    {
+      title: 'How Will You Measure Your Life?',
+      author: 'Clayton M. Christensen',
+      blurb: 'Applies rigorous business strategy thinking to personal life decisions — a good gut-check for aligning day-to-day work against what actually matters long-term.',
+      url: 'https://www.amazon.com/How-Will-Measure-Your-Life/dp/0062102419',
+    },
+    {
+      title: 'Grit',
+      author: 'Angela Duckworth',
+      blurb: 'Research on passion and sustained perseverance as the real driver of achievement, over raw talent — a helpful reminder when a project or process redesign gets long.',
+      url: 'https://www.amazon.com/Grit-Perseverance-Angela-Duckworth-author/dp/1501144162',
+    },
+    {
+      title: "Don't Believe Everything You Think",
+      author: 'Joseph Nguyen',
+      blurb: 'A short, direct case for separating your thinking from your circumstances — a useful reset when a high-pressure operational day starts to feel like a crisis.',
+      url: 'https://www.amazon.com/Dont-Believe-Everything-Think-Expanded/dp/B0D47VYQMY',
     },
   ];
 
@@ -1125,22 +1146,27 @@ function Books() {
           </h2>
           <p className="text-slate-500 mt-4 max-w-2xl">
             Titles that have shaped how I think about operations, systems, and leadership.
-            <span className="text-slate-400 italic"> [Placeholder — swap in your actual picks]</span>
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {books.map((book, i) => (
-            <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-6 card-hover">
+            <a
+              key={i}
+              href={book.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block bg-slate-50 border border-slate-200 rounded-lg p-6 card-hover hover:border-navy-300 transition-colors"
+            >
               <div className="flex items-start gap-3 mb-3">
                 <BookOpen className="text-navy-600 mt-1 flex-shrink-0" size={20} />
                 <div>
-                  <h3 className="font-display text-lg text-navy-800">{book.title}</h3>
+                  <h3 className="font-display text-lg text-navy-800 link-underline inline-block">{book.title}</h3>
                   <p className="text-slate-500 text-sm">{book.author}</p>
                 </div>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">{book.blurb}</p>
-            </div>
+            </a>
           ))}
         </div>
       </div>
@@ -1152,19 +1178,28 @@ function Books() {
 function Podcasts() {
   const podcasts = [
     {
-      title: '[Podcast name]',
-      host: '[Host name]',
-      blurb: '[TBD — why you listen and what you take from it for this kind of work]',
+      title: 'Modern Wisdom',
+      host: 'Chris Williamson',
+      blurb: 'Long-form conversations with researchers, authors, and high performers on discipline, decision-making, and how people actually change behavior.',
+      url: 'https://podcasts.apple.com/us/podcast/modern-wisdom/id1347973549',
     },
     {
-      title: '[Podcast name]',
-      host: '[Host name]',
-      blurb: '[TBD]',
+      title: 'Pfeffer on Power',
+      host: 'Jeffrey Pfeffer',
+      blurb: 'Stanford professor and author of 7 Rules of Power interviews guests on how they\u2019ve actually built and used influence in their careers.',
+      url: 'https://podcasts.apple.com/us/podcast/pfeffer-on-power/id1644174653',
     },
     {
-      title: '[Podcast name]',
-      host: '[Host name]',
-      blurb: '[TBD]',
+      title: 'The Personal Finance Podcast',
+      host: 'Andrew Giancola',
+      blurb: 'Practical, no-jargon breakdowns of building wealth and financial systems \u2014 the same systems-first thinking applied to personal finance.',
+      url: 'https://podcasts.apple.com/us/podcast/the-personal-finance-podcast/id1511786733',
+    },
+    {
+      title: 'The Systems Thinker Show',
+      host: 'Karass Innovations Group',
+      blurb: 'A show built directly around the discipline this whole site is about \u2014 process mapping, lean thinking, and engineering smarter operations.',
+      url: 'https://podcasts.apple.com/us/podcast/the-systems-thinker-show-engineering-smarter/id1806875662',
     },
   ];
 
@@ -1177,23 +1212,28 @@ function Podcasts() {
             Podcasts
           </h2>
           <p className="text-slate-500 mt-4 max-w-2xl">
-            What's in rotation on the commute — operations, healthcare, and a few outliers.
-            <span className="text-slate-400 italic"> [Placeholder — swap in your actual picks]</span>
+            What's in rotation on the commute — operations, leadership, and personal systems.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {podcasts.map((pod, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-lg p-6 card-hover">
+            <a
+              key={i}
+              href={pod.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block bg-white border border-slate-200 rounded-lg p-6 card-hover hover:border-navy-300 transition-colors"
+            >
               <div className="flex items-start gap-3 mb-3">
                 <Headphones className="text-navy-600 mt-1 flex-shrink-0" size={20} />
                 <div>
-                  <h3 className="font-display text-lg text-navy-800">{pod.title}</h3>
+                  <h3 className="font-display text-lg text-navy-800 link-underline inline-block">{pod.title}</h3>
                   <p className="text-slate-500 text-sm">{pod.host}</p>
                 </div>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">{pod.blurb}</p>
-            </div>
+            </a>
           ))}
         </div>
       </div>
