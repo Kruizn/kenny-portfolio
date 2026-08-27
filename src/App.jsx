@@ -622,10 +622,10 @@ flowchart LR
     D2 ~~~ D3
     D3 ~~~ D4
 
-    classDef prompt fill:#E8F4FA,stroke:#039EC3,stroke-width:1px,text-align:left
-    classDef nlu fill:#E4F9F3,stroke:#11B08D,stroke-width:1.5px,stroke-dasharray: 4 2,text-align:left
-    classDef decision fill:#FFF3D6,stroke:#DD8A0E,stroke-width:1px
-    classDef routing fill:#F1EAFB,stroke:#6948A6,stroke-width:1px
+    classDef prompt fill:#E8F4FA,stroke:#039EC3,stroke-width:1px,text-align:left,color:#0c4a6e
+    classDef nlu fill:#E4F9F3,stroke:#11B08D,stroke-width:1.5px,stroke-dasharray: 4 2,text-align:left,color:#0f4c3a
+    classDef decision fill:#FFF3D6,stroke:#DD8A0E,stroke-width:1px,color:#78350f
+    classDef routing fill:#F1EAFB,stroke:#6948A6,stroke-width:1px,color:#4c1d55
     classDef outcomeNeutral fill:#9AA5B1,stroke:#6b7480,color:#fff
 
     style D1 fill:#F2F2F2,stroke:#B0B0B0,stroke-width:1px
